@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { formDefinitions } from "@/lib/forms/definitions";
 import { todayInKenya, validateFields } from "@/lib/forms/validate";
-import { products } from "@/content/products";
+import { orderOptions } from "@/content/products";
 
 const order = formDefinitions.order.fields;
 const validOrder = {
   name: "Jane Wanjiku",
   phone: "0712 345 678",
-  product: products[0].name,
-  quantity: "10 bottles",
+  product: orderOptions[0].label,
+  quantity: "10",
+  purpose: "Home",
+  frequency: "One-time",
   location: "Ndwaru Road",
 };
 
@@ -21,8 +23,8 @@ describe("validateFields", () => {
 
   it("reports every missing required field", () => {
     const { errors } = validateFields(order, {});
-    expect(Object.keys(errors).sort()).toEqual(["location", "name", "phone", "product", "quantity"]);
-    expect(errors.product).toMatch(/^Please choose/);
+    expect(Object.keys(errors).sort()).toEqual(["frequency", "location", "name", "phone", "product", "purpose", "quantity"]);
+    expect(errors.product).toBe("Please make a choice.");
     expect(errors.name).toMatch(/^Please enter/);
   });
 
@@ -39,12 +41,24 @@ describe("validateFields", () => {
     expect(validateFields(order, { ...validOrder, email: "" }).errors.email).toBeUndefined();
   });
 
+  it.each(["1", "24", "500"])("accepts quantity %s", (quantity) => {
+    expect(validateFields(order, { ...validOrder, quantity }).errors.quantity).toBeUndefined();
+  });
+
+  it.each(["0", "501", "2.5", "two", "-3"])("rejects quantity %s", (quantity) => {
+    expect(validateFields(order, { ...validOrder, quantity }).errors.quantity).toMatch(/number from 1 to 500/);
+  });
+
+  it("rejects choices that are not offered", () => {
+    expect(validateFields(order, { ...validOrder, purpose: "Party boat" }).errors.purpose).toBeDefined();
+  });
+
   it("rejects select values that are not in the options", () => {
     expect(validateFields(order, { ...validOrder, product: "Free water" }).errors.product).toBeDefined();
   });
 
   it("enforces maximum lengths", () => {
-    expect(validateFields(order, { ...validOrder, quantity: "x".repeat(201) }).errors.quantity).toMatch(/under 200/);
+    expect(validateFields(order, { ...validOrder, name: "x".repeat(201) }).errors.name).toMatch(/under 200/);
   });
 
   it("rejects dates before today in Kenya time and accepts today", () => {
@@ -60,7 +74,8 @@ describe("validateFields", () => {
 describe("form definitions", () => {
   it("offer every product in the order form", () => {
     const productField = order.find((f) => f.name === "product");
-    for (const p of products) expect(productField?.options).toContain(p.name);
+    expect(productField?.type).toBe("choice");
+    expect(productField?.options).toEqual(["Case of 500 ml bottles", "Case of 1 L bottles", "20 L refill"]);
   });
 
   it("have unique field names per form and a valid subject field", () => {
@@ -69,12 +84,5 @@ describe("form definitions", () => {
       expect(new Set(names).size).toBe(names.length);
       expect(names).toContain(def.subjectField);
     }
-  });
-
-  it("collect everything procurement teams need in the tender form", () => {
-    const names = formDefinitions.tender.fields.map((f) => f.name);
-    expect(names).toEqual(
-      expect.arrayContaining(["organisation", "contactPerson", "products", "quantity", "location", "frequency", "tenderReference", "requirements"]),
-    );
   });
 });

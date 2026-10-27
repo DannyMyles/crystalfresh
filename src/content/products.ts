@@ -25,8 +25,8 @@ export type Product = {
   name: string;
   shortName: string;
   summary: string;
-  /** A photo in /public, or the built-in illustration of the bottle sizes. */
-  image: { src: string; alt: string } | { illustration: "bottles"; alt: string };
+  /** `position` is the CSS object-position used when the photo is cropped to the card. */
+  image: { src: string; alt: string; position?: string };
   highlights: string[];
   sizes: ProductSize[];
 };
@@ -36,13 +36,12 @@ export const products: Product[] = [
     slug: "bottled-water",
     name: "Bottled Drinking Water",
     shortName: "Bottled water",
-    summary: "Sealed, ready-to-drink water.",
-    image: { illustration: "bottles", alt: "20 litre, 10 litre and 1 litre water bottles" },
-    highlights: ["Homes, offices and events", "Single or bulk orders", "Local delivery"],
+    summary: "Sealed, ready-to-drink water, sold by the case.",
+    image: { src: "/images/bottled-water.jpg", alt: "A clear bottle of drinking water" },
+    highlights: ["Cases of 24 × 500 ml or 12 × 1 L", "Homes, offices and events", "Delivery available"],
     sizes: [
-      { label: "20 L", price: null },
-      { label: "10 L", price: null },
-      { label: "1 L", price: null },
+      { label: "Case of 500 ml bottles", price: 600, note: "24 bottles" },
+      { label: "Case of 1 L bottles", price: 600, note: "12 bottles" },
     ],
   },
   {
@@ -50,13 +49,30 @@ export const products: Product[] = [
     name: "Water Refill Services",
     shortName: "Water refill",
     summary: "Refill your own containers with clean drinking water.",
-    image: {
-      src: "/images/water-refill.jpg",
-      alt: "A glass bottle and a glass filled with clean water",
-    },
-    highlights: ["Economical for daily use", "Ask about regular refills"],
-    sizes: [],
+    image: { src: "/images/refill-tap.jpg", alt: "Clean water flowing from a tap", position: "50% 45%" },
+    highlights: ["Economical for daily use", "One-time or regular refills"],
+    sizes: [{ label: "20 L (per piece)", price: null }],
   },
+];
+
+/**
+ * What customers can choose on the order form. Prices are in KES per unit
+ * (`null` = confirmed by phone). Cases come in 500 ml and 1 L; 20 L is sold per piece.
+ */
+export type OrderOption = {
+  label: string;
+  hint: string;
+  productSlug: string;
+  price: number | null;
+  unit: [singular: string, plural: string];
+  /** What one unit contains, e.g. 24 bottles per case. */
+  contents?: { count: number; item: [singular: string, plural: string] };
+};
+
+export const orderOptions: OrderOption[] = [
+  { label: "Case of 500 ml bottles", hint: "24 bottles · KES 600 per case", productSlug: "bottled-water", price: 600, unit: ["case", "cases"], contents: { count: 24, item: ["bottle", "bottles"] } },
+  { label: "Case of 1 L bottles", hint: "12 bottles · KES 600 per case", productSlug: "bottled-water", price: 600, unit: ["case", "cases"], contents: { count: 12, item: ["bottle", "bottles"] } },
+  { label: "20 L refill", hint: "Per piece · price confirmed by phone", productSlug: "water-refill", price: null, unit: ["piece", "pieces"] },
 ];
 
 export function getProduct(slug: string | undefined): Product | undefined {

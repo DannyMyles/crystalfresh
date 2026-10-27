@@ -28,7 +28,7 @@ export function validateFields(
 
     if (!value) {
       if (field.required)
-        errors[field.name] = `Please ${field.type === "select" ? "choose" : "enter"} ${article(field.label)}.`;
+        errors[field.name] = `Please ${field.type === "select" || field.type === "choice" ? "make a choice" : `enter ${article(field.label)}`}.`;
       continue;
     }
 
@@ -47,9 +47,17 @@ export function validateFields(
           errors[field.name] = "Please enter a valid phone number, e.g. 0712 345 678.";
         break;
       case "select":
+      case "choice":
         if (field.options && !field.options.includes(value))
           errors[field.name] = "Please choose one of the options.";
         break;
+      case "quantity": {
+        const n = Number(value);
+        const min = field.min ?? 1;
+        const max = field.max ?? 9999;
+        if (!/^\d+$/.test(value) || n < min || n > max) errors[field.name] = `Please enter a number from ${min} to ${max}.`;
+        break;
+      }
       case "date":
         if (!DATE_RE.test(value) || Number.isNaN(Date.parse(value)))
           errors[field.name] = "Please enter a valid date.";

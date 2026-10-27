@@ -1,6 +1,6 @@
 # Crystal Fresh Hydrolife — Website
 
-Marketing and ordering website for **Crystal Fresh Hydrolife**, a supplier of bottled drinking water and water refill services on Ndwaru Road, Kenya.
+Marketing and ordering website for **Crystal Fresh Hydrolife**, a supplier of bottled drinking water and water refill services in Nairobi, Kenya.
 
 Built with Next.js 15 (App Router), TypeScript and Tailwind CSS v4.
 
@@ -8,11 +8,11 @@ Built with Next.js 15 (App Router), TypeScript and Tailwind CSS v4.
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Home: hero, products, ordering steps, corporate and tender sections, contact |
+| `/` | Home: hero, products, who we serve, ordering steps, clients, contact |
 | `/products` | Product cards (bottled water, refills) and delivery information |
 | `/order` | Order form. `?product=<slug>` preselects a product |
 | `/quote` | Bulk and corporate quotation request form |
-| `/business` | Organisations we supply, supply options, tenders & procurement (company profile, compliance documents, tender inquiry form) and FAQ. `/corporate-supply` and `/tenders` redirect here |
+| `/business` | Organisations we supply, clients, supply options and FAQ. `/corporate-supply` and `/tenders` redirect here |
 | `/contact` | Contact methods, contact form, map and hours |
 | `/privacy` | Privacy notice |
 
@@ -60,7 +60,7 @@ See [`.env.example`](.env.example) for the full list with comments.
 
 ### How form submissions work
 
-All four forms (order, quote, tender, contact) post to one Server Action (`src/app/actions.ts`). It:
+All three forms (order, quote, contact) post to one Server Action (`src/app/actions.ts`). It:
 
 1. Rejects bots: a hidden honeypot field, a minimum fill time, and Turnstile when configured.
 2. Validates every field on the server, using the same rules the browser uses (`src/lib/forms/validate.ts`). Dates cannot be in the past, using Kenya time.
@@ -115,7 +115,7 @@ Set `NEXT_PUBLIC_GA_MEASUREMENT_ID` to turn on Google Analytics 4. Without it, n
 | `click_call` | A phone link is tapped (includes `page_path`) |
 | `click_whatsapp` | A WhatsApp link is tapped |
 | `click_email` | An email link is tapped |
-| `form_submit_success` / `form_submit_error` | A form is submitted (includes `form_id`: order, quote, tender or contact) |
+| `form_submit_success` / `form_submit_error` | A form is submitted (includes `form_id`: order, quote or contact) |
 
 Form contents are never sent to analytics. The privacy notice gains an analytics section automatically when the ID is set.
 
@@ -133,9 +133,9 @@ Everything that is not yet confirmed is kept out of the UI until you fill it in.
 | Phone, WhatsApp, email, address, delivery area | `src/config/site.ts` |
 | Operating hours, delivery charges, logo, social links, map embed, coordinates | `src/config/site.ts` (currently `null` or empty) |
 | Products: names, descriptions, images, **sizes and prices** | `src/content/products.ts` (sizes are empty, so cards say prices are confirmed on contact) |
-| Permits and compliance documents | `src/content/documents.ts`, with files in `public/documents/` |
 | Organisations you have worked with ("Trusted by" logos) | `src/content/clients.ts`, with logos in `public/images/clients/` |
 | Testimonials (section hidden while empty) | `src/content/testimonials.ts` |
+| Hydration tips on the home page (hidden while empty) | `src/content/tips.ts` |
 | Photo gallery on the home page (hidden while empty) | `src/content/gallery.ts`, with photos in `public/images/gallery/` |
 | Organisation types on the corporate page | `src/content/segments.ts` |
 | Form fields and dropdown options | `src/lib/forms/definitions.ts` |

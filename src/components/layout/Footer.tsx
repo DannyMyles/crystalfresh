@@ -24,7 +24,7 @@ export function Footer() {
         <div>
           <Logo invert />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-brand-200">
-            Bottled water and refills along Ndwaru Road.
+            Bottled drinking water and refills, delivered.
           </p>
           {socials.length > 0 && (
             <ul className="mt-6 flex flex-wrap gap-3">
@@ -62,17 +62,12 @@ export function Footer() {
           <ul className="mt-4 space-y-3 text-sm">
             <li>
               <Link href="/order" className="hover:text-white">
-                Order water
+                Order Water
               </Link>
             </li>
             <li>
               <Link href="/quote" className="hover:text-white">
-                Request a quote
-              </Link>
-            </li>
-            <li>
-              <Link href="/business#tender-form" className="hover:text-white">
-                Tender inquiry
+                Request a Quote
               </Link>
             </li>
             <li>
@@ -88,11 +83,11 @@ export function Footer() {
           <address className="mt-4 space-y-3 text-sm not-italic">
             <a href={telHref} className="flex items-center gap-3 hover:text-white">
               <Phone className="h-4 w-4 shrink-0 text-aqua-300" aria-hidden="true" />
-              {site.phone.display}
+              Call {site.phone.display}
             </a>
             <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-white">
               <WhatsAppIcon className="h-4 w-4 shrink-0 text-aqua-300" />
-              WhatsApp {site.whatsapp.display}
+              WhatsApp us
             </a>
             <a href={mailtoHref()} className="flex items-center gap-3 break-words hover:text-white">
               <Mail className="h-4 w-4 shrink-0 text-aqua-300" aria-hidden="true" />
@@ -100,7 +95,7 @@ export function Footer() {
             </a>
             <p className="flex items-center gap-3">
               <MapPin className="h-4 w-4 shrink-0 text-aqua-300" aria-hidden="true" />
-              {site.address.street}, {site.address.country}
+              {site.location}
             </p>
           </address>
           {site.operatingHours.length > 0 && (
@@ -120,7 +115,7 @@ export function Footer() {
           <p>
             © {year} {site.name}. All rights reserved.
           </p>
-          <p>{site.address.street}, {site.address.country}</p>
+          <p>{site.logoTagline}</p>
         </Container>
       </div>
     </footer>

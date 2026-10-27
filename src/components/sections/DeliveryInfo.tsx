@@ -7,7 +7,7 @@ export function DeliveryInfo({ className = "" }: { className?: string }) {
     {
       icon: Wallet,
       label: "Charges",
-      value: site.deliveryCharges ?? "Confirmed when you order",
+      value: site.deliveryCharges ?? "Confirmed when we call you",
     },
     {
       icon: Clock,

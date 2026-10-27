@@ -31,13 +31,13 @@ export const site = {
   tagline: "Pure Water. Reliable Supply. Trusted Partnerships.",
   logoTagline: "Pure Drinking Water",
   description:
-    "Crystal Fresh Hydrolife supplies bottled drinking water and water refill services along Ndwaru Road, Kenya. Order water, request bulk and corporate quotations, or send tender inquiries.",
+    "Crystal Fresh Hydrolife supplies bottled drinking water and water refill services in Nairobi, Kenya, delivering to homes, businesses and institutions. Order water or request bulk and corporate quotations.",
 
   /** Set NEXT_PUBLIC_SITE_URL once the domain is confirmed. */
   url: resolveSiteUrl(),
 
   phone: {
-    display: "0758 269 725",
+    display: "(+254) 758 269 725",
     /** Used for click-to-call links: tel:0758269725 */
     tel: "0758269725",
     international: "+254758269725",
@@ -46,30 +46,34 @@ export const site = {
   whatsapp: {
     /** International format without "+", used by wa.me links. */
     number: "254758269725",
-    display: "0758 269 725",
+    display: "(+254) 758 269 725",
     defaultMessage:
       "Hello Crystal Fresh Hydrolife, I would like to inquire about your water supply.",
   },
 
   email: "muhadiwawire@gmail.com",
 
+  /** General location shown across the site. The street is used only for directions and search engines. */
+  location: "Nairobi, Kenya",
+
   address: {
     street: "Ndwaru Road",
     /** e.g. a building name or landmark, once confirmed. */
     landmark: null as string | null,
-    locality: null as string | null,
+    locality: "Nairobi" as string | null,
     country: "Kenya",
     countryCode: "KE",
   },
 
-  deliveryArea: "Ndwaru Road and nearby areas",
+  /** Where you deliver. Replace with the confirmed areas, e.g. "Nairobi and surrounding counties". */
+  deliveryArea: "Nairobi and beyond. Ask about your area.",
 
   map: {
     /**
      * Paste a verified Google Maps embed URL (Share → Embed a map → the iframe's
      * src) to replace the map placeholder with a live map.
      */
-    embedUrl: null as string | null,
+    embedUrl: "https://www.google.com/maps/embed?origin=mfe&pb=!1m3!3m2!1m1!4s7519144759564615141" as string | null,
     /** Exact coordinates, once verified. Used in structured data. */
     geo: null as { latitude: number; longitude: number } | null,
     /** The business's own Google Maps place (opens the pin; visitors tap Directions from there). */
@@ -79,7 +83,7 @@ export const site = {
   /** e.g. [{ days: "Monday – Saturday", hours: "7:00 am – 7:00 pm" }] */
   operatingHours: [] as OperatingHours[],
 
-  /** e.g. "Free delivery within Ndwaru Road for orders above …". */
+  /** e.g. "Free delivery for orders above …". */
   deliveryCharges: null as string | null,
 
   /** The logo mark (tap and ring) under /public; the wordmark text is set in Logo.tsx. */

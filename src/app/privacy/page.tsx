@@ -19,7 +19,7 @@ export default function PrivacyPage() {
           <h2 className="text-lg font-semibold text-ink">What we collect</h2>
           <p className="mt-2">
             When you use a form on this website, we collect the details you enter, such as your name, phone number, email
-            address, organisation, delivery location and the information about your order, quotation or tender request.
+            address, organisation, delivery location and the information about your order, quotation or message.
           </p>
         </section>
         <section>

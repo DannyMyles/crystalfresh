@@ -5,8 +5,8 @@
   --color-brand-100: #d7ecfa;
   --color-brand-200: #b2daf5;
   --color-brand-300: #7dc0ec;
-  --color-brand-400: #42a0de;
-  --color-brand-500: #1b84c9;
+  --color-brand-400: #56a8dc;
+  --color-brand-500: #4199d4;
   --color-brand-600: #0f69a8;
   --color-brand-700: #0e5488;
   --color-brand-800: #114770;
@@ -23,8 +23,11 @@
   --color-aqua-700: #0f697d;
 
   --color-ink: #0b2540;
-  /* Exact blue from the Crystal Fresh logo. Use only for large or bold text (3:1 on white). */
-  --color-logo: #399be2;
+  /* Brand guide colours. The blues pass only for large or bold text on white (about 3:1),
+     so body text and buttons use the darker brand-600+ shades. */
+  --color-logo: #4199d4;
+  --color-logo-light: #56a8dc;
+  --color-logo-black: #231f20;
   --color-muted: #4a6378;
   --color-line: #dde9f2;
   --color-mist: #f4f9fc;
@@ -45,6 +48,26 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Larger text on bigger screens. Everything is sized in rem, so spacing and the
+     page width (max-w-7xl = 80rem) grow with it: 1360px at 17px, 1440px at 18px, 1520px at 19px. */
+  @media (min-width: 64rem) {
+    html {
+      font-size: 106.25%;
+    }
+  }
+
+  @media (min-width: 80rem) {
+    html {
+      font-size: 112.5%;
+    }
+  }
+
+  @media (min-width: 96rem) {
+    html {
+      font-size: 118.75%;
+    }
   }
 
   body {
@@ -171,4 +194,10 @@
 .animate-blob {
   border-radius: 42% 58% 62% 38% / 45% 42% 58% 55%;
   animation: blob-morph 12s ease-in-out infinite;
+}
+
+/* Brand guide gradient (#56A8DC to #4199D4) for brand surfaces, not for text backgrounds. */
+@utility bg-brand-gradient {
+  background-color: var(--color-logo);
+  background-image: linear-gradient(135deg, var(--color-logo-light), var(--color-logo));
 }

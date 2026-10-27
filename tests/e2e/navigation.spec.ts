@@ -101,8 +101,7 @@ test("old Bulk Supply and Tenders addresses redirect to the Business page", asyn
   await page.goto("/corporate-supply");
   await expect(page).toHaveURL(/\/business$/);
   await page.goto("/tenders");
-  await expect(page).toHaveURL(/\/business#tenders$/);
-  await expect(page.getByRole("heading", { name: "For procurement teams" })).toBeVisible();
+  await expect(page).toHaveURL(/\/business$/);
 });
 
 for (const path of ["/", "/business"]) {
@@ -113,7 +112,14 @@ for (const path of ["/", "/business"]) {
       const logo = section.getByRole("img", { name: `${name} logo` });
       await logo.scrollIntoViewIfNeeded();
       await expect(logo).toBeVisible();
-      expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+      await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
     }
   });
 }
+
+test("the home page shows hydration tips", async ({ page }) => {
+  await page.goto("/");
+  const section = page.locator("section", { has: page.getByRole("heading", { name: "Stay well hydrated" }) });
+  await expect(section.getByRole("listitem")).toHaveCount(4);
+  await expect(section.getByRole("heading", { name: "Clean before refilling" })).toBeVisible();
+});

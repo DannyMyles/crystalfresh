@@ -63,14 +63,7 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          <a
-            href={telHref}
-            className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"
-          >
-            <Phone className="h-4 w-4" aria-hidden="true" />
-            {site.phone.display}
-          </a>
+        <div className="hidden lg:block">
           <ButtonLink href="/order">Order Water</ButtonLink>
         </div>
 

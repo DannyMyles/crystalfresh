@@ -7,7 +7,7 @@ export type Hit = { secret: string | null; payload: { reference: string; formId:
 export const test = base.extend<{ blockThirdParties: void }>({
   blockThirdParties: [
     async ({ context }, use) => {
-      await context.route(/googletagmanager\.com|google-analytics\.com|challenges\.cloudflare\.com/, (route) => route.abort());
+      await context.route(/googletagmanager\.com|google-analytics\.com|challenges\.cloudflare\.com|google\.com\/maps/, (route) => route.abort());
       await use();
     },
     { auto: true },

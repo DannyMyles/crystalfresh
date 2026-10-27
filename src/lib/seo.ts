@@ -34,7 +34,6 @@ export function businessJsonLd(): Record<string, unknown> {
     ...(site.map.geo
       ? { geo: { "@type": "GeoCoordinates", latitude: site.map.geo.latitude, longitude: site.map.geo.longitude } }
       : {}),
-    areaServed: site.deliveryArea,
     contactPoint: {
       "@type": "ContactPoint",
       telephone: site.phone.international,

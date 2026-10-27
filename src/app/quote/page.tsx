@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { getProduct } from "@/content/products";
 import { formDefinitions } from "@/lib/forms/definitions";
 import { pageMetadata } from "@/lib/seo";
-import { mailtoHref } from "@/lib/links";
+import { mailtoHref, telHref } from "@/lib/links";
 import { site } from "@/config/site";
 import { Container } from "@/components/ui/Section";
 import { PageHero } from "@/components/sections/PageHero";
@@ -33,7 +32,7 @@ export default async function QuotePage({ searchParams }: Props) {
 
       <section className="bg-mist py-16 sm:py-20" aria-label="Quotation request form">
         <Container className="grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-          <FormCard title="Quotation request">
+          <FormCard title="Your requirements">
             <SmartForm
               formId="quote"
               title={definition.title}
@@ -45,12 +44,15 @@ export default async function QuotePage({ searchParams }: Props) {
 
           <aside className="space-y-6 lg:sticky lg:top-28">
             <div className="rounded-4xl bg-brand-900 p-8 text-white">
-              <h2 className="font-semibold">Responding to a tender?</h2>
-              <Link href="/business#tender-form" className="mt-3 inline-block text-sm font-semibold text-aqua-300 hover:text-white">
-                Tender inquiry →
-              </Link>
+              <h2 className="font-semibold">Prefer to talk?</h2>
+              <p className="mt-3 text-sm text-brand-100">
+                Call or WhatsApp{" "}
+                <a href={telHref} className="font-semibold text-white underline-offset-4 hover:underline">
+                  {site.phone.display}
+                </a>
+              </p>
               <p className="mt-6 border-t border-white/10 pt-6 text-sm text-brand-100">
-                Prefer email?{" "}
+                Or email{" "}
                 <a href={mailtoHref("Quotation request")} className="font-semibold break-words text-white underline-offset-4 hover:underline">
                   {site.email}
                 </a>

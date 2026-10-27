@@ -4,26 +4,20 @@ import { formatPrice, type Product } from "@/content/products";
 import { whatsappHref } from "@/lib/links";
 import { ButtonLink } from "@/components/ui/Button";
 import { WhatsAppIcon } from "@/components/brand/WhatsAppIcon";
-import { BottleLineup } from "@/components/brand/Bottles";
 
 export function ProductCard({ product, headingLevel = "h3" }: { product: Product; headingLevel?: "h2" | "h3" }) {
   const Heading = headingLevel;
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-soft ring-1 ring-line transition duration-300 hover:-translate-y-1 hover:shadow-lift">
       <div className="relative aspect-4/3 overflow-hidden bg-brand-50">
-        {"illustration" in product.image ? (
-          <div role="img" aria-label={product.image.alt} className="h-full">
-            <BottleLineup className="transition duration-700 ease-out group-hover:scale-[1.03]" />
-          </div>
-        ) : (
-          <Image
-            src={product.image.src}
-            alt={product.image.alt}
-            fill
-            sizes="(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
-          />
-        )}
+        <Image
+          src={product.image.src}
+          alt={product.image.alt}
+          fill
+          sizes="(min-width: 1024px) 40vw, (min-width: 640px) 50vw, 100vw"
+          style={{ objectPosition: product.image.position }}
+          className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
+        />
       </div>
 
       <div className="flex flex-1 flex-col p-6 sm:p-8">
@@ -50,16 +44,16 @@ export function ProductCard({ product, headingLevel = "h3" }: { product: Product
             <dl className="mt-3 divide-y divide-line">
               {product.sizes.map((size) => (
                 <div key={size.label} className="flex items-baseline justify-between gap-4 py-2 text-sm">
-                  <dt className="text-ink">{size.label}</dt>
-                  <dd className="text-right font-semibold text-brand-700">
-                    {formatPrice(size.price)}
-                    {size.note && <span className="ml-1 font-normal text-muted">{size.note}</span>}
-                  </dd>
+                  <dt className="text-ink">
+                    {size.label}
+                    {size.note && <span className="block text-xs text-muted">{size.note}</span>}
+                  </dt>
+                  <dd className="text-right font-semibold whitespace-nowrap text-brand-700">{formatPrice(size.price)}</dd>
                 </div>
               ))}
             </dl>
           ) : (
-            <p className="mt-1 text-sm text-ink">On request</p>
+            <p className="mt-1 text-sm text-ink">Prices on request</p>
           )}
         </div>
 

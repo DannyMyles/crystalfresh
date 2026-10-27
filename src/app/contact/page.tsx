@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, FileSignature, FileText, ShoppingBag } from "lucide-react";
+import { ArrowRight, Building2, FileText, ShoppingBag } from "lucide-react";
 import { formDefinitions } from "@/lib/forms/definitions";
 import { pageMetadata } from "@/lib/seo";
 import { Container } from "@/components/ui/Section";
@@ -13,14 +13,14 @@ import { SmartForm } from "@/components/forms/SmartForm";
 export const metadata = pageMetadata({
   title: "Contact Us",
   description:
-    "Contact Crystal Fresh Hydrolife on Ndwaru Road, Kenya. Call or WhatsApp 0758 269 725, email muhadiwawire@gmail.com, or send us a message online.",
+    "Contact Crystal Fresh Hydrolife in Nairobi, Kenya. Call or WhatsApp (+254) 758 269 725, email muhadiwawire@gmail.com, or send us a message online.",
   path: "/contact",
 });
 
 const shortcuts = [
-  { href: "/order", icon: ShoppingBag, label: "Order water" },
-  { href: "/quote", icon: FileText, label: "Request a bulk quote" },
-  { href: "/business#tender-form", icon: FileSignature, label: "Tender inquiry" },
+  { href: "/order", icon: ShoppingBag, label: "Order Water" },
+  { href: "/quote", icon: FileText, label: "Request a Quote" },
+  { href: "/business", icon: Building2, label: "Business supply" },
 ];
 
 export default function ContactPage() {

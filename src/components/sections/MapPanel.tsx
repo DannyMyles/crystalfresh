@@ -9,8 +9,8 @@ export function MapPanel({ compact = false }: { compact?: boolean }) {
       <div className="overflow-hidden rounded-3xl ring-1 ring-line">
         <iframe
           src={site.map.embedUrl}
-          title={`Map showing ${site.name} on ${site.address.street}`}
-          className={`${compact ? "h-[240px]" : "h-[380px]"} w-full border-0`}
+          title={`Map showing ${site.name} in ${site.location}`}
+          className={`${compact ? "h-[300px]" : "h-[380px]"} w-full border-0`}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen

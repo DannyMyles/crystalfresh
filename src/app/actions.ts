@@ -9,6 +9,7 @@ import { isRateLimited } from "@/lib/forms/rate-limit";
 import { deliverSubmission, DeliveryNotConfiguredError, sendAcknowledgement, type Submission } from "@/lib/forms/deliver";
 import type { FormState } from "@/lib/forms/types";
 import { site } from "@/config/site";
+import { describeEstimate, estimateOrder } from "@/lib/forms/estimate";
 
 const FALLBACK = `Please call or WhatsApp ${site.phone.display}.`;
 
@@ -63,6 +64,11 @@ export async function submitInquiry(_prev: FormState, formData: FormData): Promi
     replyTo: values.email || undefined,
     fields: definition.fields.map((f) => ({ name: f.name, label: f.label, value: values[f.name] })),
   };
+
+  if (definition.id === "order") {
+    const estimate = describeEstimate(estimateOrder(values));
+    if (estimate) submission.fields.push({ name: "estimate", label: "Estimated total (shown to customer)", value: estimate });
+  }
 
   try {
     const results = await deliverSubmission(submission);

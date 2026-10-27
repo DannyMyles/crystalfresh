@@ -1,7 +1,8 @@
-import { products } from "@/content/products";
+import { orderOptions, products } from "@/content/products";
 import { segments } from "@/content/segments";
 
-export type FieldType = "text" | "email" | "tel" | "textarea" | "select" | "date";
+/** `choice` renders options as large buttons; `quantity` renders a number with − / + buttons. */
+export type FieldType = "text" | "email" | "tel" | "textarea" | "select" | "date" | "choice" | "quantity";
 
 export type FieldConfig = {
   name: string;
@@ -18,9 +19,14 @@ export type FieldConfig = {
   hint?: string;
   /** Date fields only: reject dates before today (Kenya time). */
   notPast?: boolean;
+  /** Choice fields only: a short line shown under each option. */
+  optionHints?: Readonly<Record<string, string>>;
+  /** Quantity fields only. */
+  min?: number;
+  max?: number;
 };
 
-export type FormId = "contact" | "order" | "quote" | "tender";
+export type FormId = "contact" | "order" | "quote";
 
 export type FormDefinition = {
   id: FormId;
@@ -32,7 +38,6 @@ export type FormDefinition = {
   fields: FieldConfig[];
 };
 
-const productOptions = [...products.map((p) => p.name), "Not sure yet – please advise"];
 const supplyProducts = [...products.map((p) => p.name), "Both bottled water and refills"];
 const frequencyOptions = [
   "One-off order",
@@ -69,7 +74,6 @@ export const formDefinitions: Record<FormId, FormDefinition> = {
           "Water refill services",
           "Delivery",
           "Corporate or bulk supply",
-          "Tenders and procurement",
           "Other",
         ],
       },
@@ -83,10 +87,27 @@ export const formDefinitions: Record<FormId, FormDefinition> = {
     subject: "New water order request",
     subjectField: "name",
     fields: [
+      {
+        name: "product",
+        label: "What would you like?",
+        type: "choice",
+        required: true,
+        full: true,
+        options: orderOptions.map((o) => o.label),
+        optionHints: Object.fromEntries(orderOptions.map((o) => [o.label, o.hint])),
+      },
+      { name: "quantity", label: "How many?", type: "quantity", required: true, min: 1, max: 500, hint: "Cases or 20 L pieces" },
+      { name: "purpose", label: "What's it for?", type: "choice", required: true, options: ["Home", "Office", "Event"] },
+      {
+        name: "frequency",
+        label: "How often?",
+        type: "choice",
+        required: true,
+        full: true,
+        options: ["One-time", "Weekly", "Every two weeks", "Monthly"],
+      },
       { name: "name", label: "Your name", type: "text", required: true, autoComplete: "name" },
-      { name: "phone", label: "Phone number", type: "tel", required: true, autoComplete: "tel", placeholder: "07XX XXX XXX",  },
-      { name: "product", label: "Product", type: "select", required: true, options: productOptions },
-      { name: "quantity", label: "Quantity and size", type: "text", required: true, placeholder: "e.g. 2 × 20 L", maxLength: 200 },
+      { name: "phone", label: "Phone number", type: "tel", required: true, autoComplete: "tel", placeholder: "07XX XXX XXX" },
       { name: "location", label: "Delivery location", type: "text", required: true, full: true, autoComplete: "street-address", placeholder: "Estate, building or landmark", maxLength: 300 },
       { name: "date", label: "Preferred delivery date", type: "date", notPast: true, hint: "Optional" },
       { name: "time", label: "Preferred time", type: "select", options: ["Any time", "Morning", "Afternoon", "Evening"] },
@@ -106,7 +127,7 @@ export const formDefinitions: Record<FormId, FormDefinition> = {
       { name: "contactPerson", label: "Contact person", type: "text", required: true, autoComplete: "name" },
       ...contactPerson,
       { name: "products", label: "Products needed", type: "select", required: true, options: supplyProducts },
-      { name: "quantity", label: "Estimated quantity", type: "text", required: true, placeholder: "e.g. 50 bottles per week", maxLength: 300 },
+      { name: "quantity", label: "Estimated quantity", type: "text", required: true, placeholder: "e.g. 20 × 20 L per week", maxLength: 300 },
       { name: "frequency", label: "Supply frequency", type: "select", required: true, options: frequencyOptions },
       { name: "location", label: "Delivery location", type: "text", required: true, autoComplete: "street-address", maxLength: 300 },
       { name: "startDate", label: "Preferred start date", type: "date", notPast: true, hint: "Optional" },
@@ -114,41 +135,6 @@ export const formDefinitions: Record<FormId, FormDefinition> = {
     ],
   },
 
-  tender: {
-    id: "tender",
-    title: "Tender / procurement inquiry",
-    subject: "New tender inquiry",
-    subjectField: "organisation",
-    fields: [
-      { name: "organisation", label: "Organisation name", type: "text", required: true, autoComplete: "organization" },
-      {
-        name: "sector",
-        label: "Sector",
-        type: "select",
-        required: true,
-        options: [
-          "National government",
-          "County government",
-          "State corporation / parastatal",
-          "Private company",
-          "NGO / development partner",
-          "Educational institution",
-          "Healthcare institution",
-          "Other",
-        ],
-      },
-      { name: "contactPerson", label: "Contact person", type: "text", required: true, autoComplete: "name" },
-      { name: "designation", label: "Designation / role", type: "text", autoComplete: "organization-title", placeholder: "e.g. Procurement Officer", hint: "Optional" },
-      ...contactPerson,
-      { name: "products", label: "Products required", type: "textarea", required: true, full: true, rows: 3, maxLength: 1500, placeholder: "Products and specifications" },
-      { name: "quantity", label: "Quantities", type: "text", required: true, maxLength: 300, placeholder: "e.g. 2,000 bottles per month" },
-      { name: "frequency", label: "Supply frequency", type: "select", required: true, options: frequencyOptions },
-      { name: "location", label: "Delivery location(s)", type: "text", required: true, full: true, maxLength: 300 },
-      { name: "tenderReference", label: "Tender / RFQ reference", type: "text", maxLength: 120, hint: "Optional" },
-      { name: "deadline", label: "Submission deadline", type: "date", notPast: true, hint: "Optional" },
-      { name: "requirements", label: "Additional requirements", type: "textarea", full: true, rows: 4, maxLength: 3000, hint: "Optional" },
-    ],
-  },
 };
 
 export function isFormId(value: unknown): value is FormId {

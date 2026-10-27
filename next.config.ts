@@ -13,7 +13,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com",
   "font-src 'self'",
-  "connect-src 'self' https://challenges.cloudflare.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  `connect-src 'self'${isDev ? " ws: wss:" : ""} https://challenges.cloudflare.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com`,
   "frame-src https://challenges.cloudflare.com https://www.google.com https://maps.google.com",
   "form-action 'self'",
   "base-uri 'self'",
@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
   // The end-to-end tests build into a separate folder so they never replace the production build.
   distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
+  // Lets `npm run dev` be opened from other devices on the local network (e.g. a phone).
+  // Update if this computer's network address changes. Has no effect in production.
+  allowedDevOrigins: ["10.0.0.152"],
   // Put page metadata in <head> for every visitor, so link previews and all crawlers see it.
   htmlLimitedBots: /.*/,
   images: {
@@ -47,7 +50,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/corporate-supply", destination: "/business", permanent: true },
-      { source: "/tenders", destination: "/business#tenders", permanent: true },
+      { source: "/tenders", destination: "/business", permanent: true },
     ];
   },
   async headers() {

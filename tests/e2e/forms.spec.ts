@@ -9,22 +9,32 @@ test.beforeEach(async () => {
 
 test("order: validates in the browser, then delivers to the backend", async ({ page }) => {
   await page.goto("/order?product=water-refill");
-  await expect(page.getByLabel("Product")).toHaveValue("Water Refill Services");
+  await expect(page.getByRole("radio", { name: /20 L refill/ })).toBeChecked();
 
-  await page.getByRole("button", { name: "Send order" }).click();
+  await page.getByRole("button", { name: "Send order request" }).click();
+  await expect(page.getByText("Please make a choice.")).toHaveCount(2);
   await expect(page.getByText("Please enter your name.")).toBeVisible();
-  await expect(page.getByLabel("Your name")).toBeFocused();
+  await expect(page.getByRole("radio", { name: "Home" })).toBeFocused();
   expect(await webhook.hits()).toHaveLength(0);
 
+  await page.getByRole("radio", { name: /Case of 1 L bottles/ }).check();
+  await page.getByRole("button", { name: "Increase quantity" }).click();
+  await page.getByRole("button", { name: "Increase quantity" }).click();
+  await expect(page.getByLabel("How many?")).toHaveValue("3");
+  await expect(page.getByText("KES 1,800")).toBeVisible();
+  await page.getByRole("radio", { name: /20 L refill/ }).check();
+  await expect(page.getByText("20 L refill: price confirmed when we call you.")).toBeVisible();
+  await page.getByRole("button", { name: "Decrease quantity" }).click();
+  await page.getByRole("radio", { name: "Office" }).check();
+  await page.getByRole("radio", { name: "Weekly" }).check();
   await page.getByLabel("Your name").fill("Jane Wanjiku");
   await expect(page.getByText("Please enter your name.")).toBeHidden();
   await page.getByLabel("Phone number").fill("0712 345 678");
-  await page.getByLabel("Quantity and size").fill("2 containers");
   await page.getByLabel("Delivery location").fill("Ndwaru Road, near the stage");
   await page.getByLabel("Preferred time").selectOption("Morning");
   await page.getByLabel("Additional notes").fill("<b>Ring</b> the bell & wait");
   await waitLikeAHuman(page);
-  await page.getByRole("button", { name: "Send order" }).click();
+  await page.getByRole("button", { name: "Send order request" }).click();
 
   await expect(successPanel(page)).toContainText("Request received");
   const reference = (await successPanel(page).locator("strong").textContent()) ?? "";
@@ -36,7 +46,10 @@ test("order: validates in the browser, then delivers to the backend", async ({ p
   expect(hit.payload.formId).toBe("order");
   expect(hit.payload.data).toMatchObject({
     name: "Jane Wanjiku",
-    product: "Water Refill Services",
+    product: "20 L refill",
+    quantity: "2",
+    purpose: "Office",
+    frequency: "Weekly",
     time: "Morning",
     notes: "<b>Ring</b> the bell & wait",
   });
@@ -49,11 +62,12 @@ test("order: rejects a delivery date in the past", async ({ page }) => {
   await page.goto("/order");
   await page.getByLabel("Your name").fill("Jane");
   await page.getByLabel("Phone number").fill("0712345678");
-  await page.getByLabel("Product").selectOption({ index: 1 });
-  await page.getByLabel("Quantity and size").fill("1 bottle");
+  await page.getByRole("radio", { name: /Case of 1 L bottles/ }).check();
+  await page.getByRole("radio", { name: "Home" }).check();
+  await page.getByRole("radio", { name: "One-time" }).check();
   await page.getByLabel("Delivery location").fill("Ndwaru Road");
   await page.getByLabel("Preferred delivery date").fill("2020-01-01");
-  await page.getByRole("button", { name: "Send order" }).click();
+  await page.getByRole("button", { name: "Send order request" }).click();
   await expect(page.getByText("Please choose today or a later date.")).toBeVisible();
   expect(await webhook.hits()).toHaveLength(0);
 });
@@ -79,31 +93,6 @@ test("quote: product buttons preselect the product and the request is delivered"
   const [hit] = await webhook.hits();
   expect(hit.payload.formId).toBe("quote");
   expect(hit.payload.data.organisation).toBe("Example Academy");
-});
-
-test("tender: server and browser agree on email validation, then the inquiry is delivered", async ({ page }) => {
-  await page.goto("/business#tender-form");
-  await page.getByLabel("Organisation name").fill("Example County Government");
-  await page.getByLabel("Sector").selectOption("County government");
-  await page.getByLabel("Contact person").fill("Jane Doe");
-  await page.getByLabel("Designation / role").fill("Procurement Officer");
-  await page.getByLabel("Phone number").fill("+254 712 345678");
-  await page.getByLabel("Email address").fill("not-an-email");
-  await page.getByLabel("Products required").fill("500 ml bottled drinking water");
-  await page.getByLabel("Quantities").fill("1,000 bottles per month");
-  await page.getByLabel("Supply frequency").selectOption("Monthly");
-  await page.getByLabel("Delivery location(s)").fill("County headquarters");
-  await page.getByLabel("Tender / RFQ reference").fill("RFQ/2027/001");
-  await page.getByRole("button", { name: "Submit tender inquiry" }).click();
-  await expect(page.getByText("Please enter a valid email address.")).toBeVisible();
-
-  await page.getByLabel("Email address").fill("jane.doe@example.go.ke");
-  await waitLikeAHuman(page);
-  await page.getByRole("button", { name: "Submit tender inquiry" }).click();
-  await expect(successPanel(page)).toContainText("Request received");
-
-  const [hit] = await webhook.hits();
-  expect(hit.payload.data).toMatchObject({ tenderReference: "RFQ/2027/001", email: "jane.doe@example.go.ke" });
 });
 
 test("a failing backend shows an error with a WhatsApp fallback, never a success", async ({ page }) => {

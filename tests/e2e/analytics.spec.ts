@@ -14,6 +14,7 @@ async function analyticsEvents(page: Page) {
 test("call, WhatsApp and email clicks are recorded", async ({ page, context }) => {
   await context.route(/wa\.me|api\.whatsapp\.com/, (route) => route.abort());
   await page.goto("/contact");
+  await page.waitForLoadState("networkidle");
 
   await page.locator('a[href^="tel:"]').first().dispatchEvent("click");
   await page.locator('a[href*="wa.me"]').first().dispatchEvent("click");

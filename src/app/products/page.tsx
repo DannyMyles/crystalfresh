@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { products } from "@/content/products";
 import { pageMetadata } from "@/lib/seo";
 import { whatsappHref } from "@/lib/links";
@@ -13,7 +14,7 @@ import { WhatsAppIcon } from "@/components/brand/WhatsAppIcon";
 export const metadata = pageMetadata({
   title: "Bottled Water & Water Refill Services",
   description:
-    "Order bottled drinking water or water refill services from Crystal Fresh Hydrolife on Ndwaru Road, Kenya. Individual orders, bulk quotations and delivery to nearby areas.",
+    "Order bottled drinking water or water refill services from Crystal Fresh Hydrolife in Nairobi, Kenya. Individual orders, bulk quotations and delivery.",
   path: "/products",
 });
 
@@ -23,14 +24,14 @@ export default function ProductsPage() {
       <PageHero
         eyebrow="Products"
         title="Bottled water & refills"
-        description="Sizes and prices confirmed when you order."
+        description="Ready-to-drink bottles, or refills for your own containers."
         image={{ src: "/images/bottle-light.jpg", alt: "" }}
       >
         <ButtonLink href="/order" variant="light" size="lg">
           Order Water
         </ButtonLink>
         <ButtonLink href="/quote" size="lg" className="bg-white/10 shadow-none ring-1 ring-white/25 hover:bg-white/20">
-          Request a bulk quote
+          Request a Quote
         </ButtonLink>
       </PageHero>
 
@@ -55,7 +56,17 @@ export default function ProductsPage() {
             Check my area
           </ButtonLink>
         </div>
-        <DeliveryInfo className="mt-10 rounded-4xl bg-white p-8 ring-1 ring-line md:grid-cols-3" />
+        <div className="mt-10 grid items-center gap-8 lg:grid-cols-[1fr_9rem]">
+          <DeliveryInfo className="rounded-4xl bg-white p-8 ring-1 ring-line md:grid-cols-3" />
+          <Image
+            src="/images/delivery-shoulder.jpg"
+            alt="A delivery figure carrying a 20 litre water bottle on the shoulder"
+            width={417}
+            height={626}
+            sizes="9rem"
+            className="mx-auto hidden h-auto w-full brightness-[1.04] mix-blend-multiply lg:block"
+          />
+        </div>
       </Section>
 
       <CtaBand title="Buying in bulk?" description="Get a quotation for your organisation." primary={{ href: "/quote", label: "Request a Quote" }} />

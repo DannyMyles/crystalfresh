@@ -1,6 +1,6 @@
 import { Phone } from "lucide-react";
 import { site } from "@/config/site";
-import { getProduct } from "@/content/products";
+import { getProduct, orderOptions } from "@/content/products";
 import { formDefinitions } from "@/lib/forms/definitions";
 import { pageMetadata } from "@/lib/seo";
 import { telHref, whatsappHref } from "@/lib/links";
@@ -15,7 +15,7 @@ import { WhatsAppIcon } from "@/components/brand/WhatsAppIcon";
 export const metadata = pageMetadata({
   title: "Order Water",
   description:
-    "Order bottled drinking water or water refills from Crystal Fresh Hydrolife for delivery along Ndwaru Road and nearby areas. Order online, by phone or on WhatsApp.",
+    "Order bottled drinking water or water refills from Crystal Fresh Hydrolife for delivery to your home, office or event. Order online, by phone or on WhatsApp.",
   path: "/order",
 });
 
@@ -25,25 +25,29 @@ export default async function OrderPage({ searchParams }: Props) {
   const { product: slug } = await searchParams;
   const product = getProduct(Array.isArray(slug) ? slug[0] : slug);
   const definition = formDefinitions.order;
+  // Preselect only when the product has a single option (bottled water has two case sizes).
+  const options = orderOptions.filter((o) => o.productSlug === product?.slug);
+  const productDefault = options.length === 1 ? options[0].label : undefined;
 
   return (
     <>
       <PageHero
         eyebrow="Order water"
-        title="Order water"
-        description="We'll call or WhatsApp you to confirm price and delivery."
+        title="Place your order"
+        description="We'll call or WhatsApp you to confirm your order and delivery."
         image={{ src: "/images/bottled-water.jpg", alt: "" }}
       />
 
       <section className="bg-mist py-16 sm:py-20" aria-label="Order form">
         <Container className="grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-          <FormCard title="Your order" description="No online payment.">
+          <FormCard title="Order details" description="No online payment needed.">
             <SmartForm
               formId="order"
               title={definition.title}
               fields={definition.fields}
-              submitLabel="Send order"
-              defaults={product ? { product: product.name } : undefined}
+              submitLabel="Send order request"
+              showEstimate
+              defaults={productDefault ? { product: productDefault } : undefined}
             />
           </FormCard>
 

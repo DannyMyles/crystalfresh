@@ -17,12 +17,12 @@ export function Logo({ invert = false, size = "md" }: { invert?: boolean; size?:
       />
       <span aria-hidden="true" className={`w-px self-stretch bg-logo/70 ${large ? "my-2" : "my-1.5"}`} />
       <span className="font-logo leading-none">
-        <span className={`block font-bold tracking-wide text-logo ${large ? "text-[1.5rem]" : "text-[1.25rem]"}`}>
+        <span className={`block font-extrabold tracking-wide text-logo ${large ? "text-[1.5rem]" : "text-[1.25rem]"}`}>
           CRYSTAL FRESH
         </span>
         <span
-          className={`mt-1.5 block font-medium tracking-[0.24em] uppercase ${large ? "text-[0.7rem]" : "text-[0.58rem]"} ${
-            invert ? "text-brand-100" : "text-ink"
+          className={`mt-1.5 block font-semibold tracking-[0.24em] uppercase ${large ? "text-[0.7rem]" : "text-[0.58rem]"} ${
+            invert ? "text-brand-100" : "text-logo-black"
           }`}
         >
           {site.logoTagline}

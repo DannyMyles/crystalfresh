@@ -31,14 +31,14 @@ export default async function OpengraphImage() {
             <img src={markSrc} width={83} height={96} alt="" />
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 44, fontWeight: 700, color: "#399be2", letterSpacing: 1 }}>CRYSTAL FRESH</div>
+            <div style={{ fontSize: 44, fontWeight: 700, color: "#4199d4", letterSpacing: 1 }}>CRYSTAL FRESH</div>
             <div style={{ fontSize: 20, letterSpacing: 6, color: "#d7ecfa", marginTop: 6 }}>PURE DRINKING WATER</div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.1, maxWidth: 900 }}>{site.tagline}</div>
           <div style={{ fontSize: 28, marginTop: 24, color: "#b2daf5" }}>
-            Bottled drinking water & water refill services · Ndwaru Road, Kenya
+            Bottled drinking water & water refill services · Nairobi, Kenya
           </div>
         </div>
         <div style={{ display: "flex", gap: 40, fontSize: 24, color: "#d7ecfa" }}>

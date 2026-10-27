@@ -5,10 +5,10 @@ import { Reveal } from "@/components/ui/Reveal";
 type Audience = { icon: LucideIcon; title: string; description: string; href: string; action: string };
 
 const audiences: Audience[] = [
-  { icon: Home, title: "Homes", description: "Bottled water and refills for the family.", href: "/order", action: "Order" },
-  { icon: Briefcase, title: "Offices", description: "Regular supply for staff and visitors.", href: "/quote", action: "Get a quote" },
-  { icon: PartyPopper, title: "Events", description: "Water for weddings, meetings and functions.", href: "/quote", action: "Get a quote" },
-  { icon: Dumbbell, title: "Gyms & fitness", description: "Hydration for members and staff.", href: "/quote", action: "Get a quote" },
+  { icon: Home, title: "Homes", description: "Bottled water and refills for the family.", href: "/order", action: "Order Water" },
+  { icon: Briefcase, title: "Offices", description: "Regular supply for staff and visitors.", href: "/quote", action: "Request a Quote" },
+  { icon: PartyPopper, title: "Events", description: "Water for weddings, meetings and functions.", href: "/quote", action: "Request a Quote" },
+  { icon: Dumbbell, title: "Gyms & fitness", description: "Hydration for members and staff.", href: "/quote", action: "Request a Quote" },
 ];
 
 export function AudienceCards() {

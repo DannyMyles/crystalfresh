@@ -4,7 +4,7 @@
  * Put photos in /public/images/gallery/ (landscape or square works best).
  *
  * Example:
- *   { src: "/images/gallery/refill-station.jpg", alt: "Our refill station on Ndwaru Road" },
+ *   { src: "/images/gallery/refill-station.jpg", alt: "Our refill station" },
  */
 
 export type GalleryPhoto = { src: string; alt: string };

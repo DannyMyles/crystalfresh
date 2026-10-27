@@ -7,6 +7,7 @@ import { submitInquiry } from "@/app/actions";
 import type { FieldConfig, FormId } from "@/lib/forms/definitions";
 import { todayInKenya, validateFields, type FieldErrors } from "@/lib/forms/validate";
 import { initialFormState, type FormState } from "@/lib/forms/types";
+import { estimateOrder, formatKes, type OrderEstimate } from "@/lib/forms/estimate";
 import { trackEvent } from "@/lib/analytics";
 import { telHref, whatsappHref } from "@/lib/links";
 import { site } from "@/config/site";
@@ -19,6 +20,8 @@ type SmartFormProps = {
   fields: FieldConfig[];
   submitLabel: string;
   defaults?: Record<string, string>;
+  /** Show a live price estimate (order form). */
+  showEstimate?: boolean;
 };
 
 /** Remounting the inner form (via key) gives a clean slate after a success. */
@@ -27,7 +30,14 @@ export function SmartForm(props: SmartFormProps) {
   return <FormInner key={round} {...props} onReset={() => setRound((r) => r + 1)} />;
 }
 
-function FormInner({ formId, title, fields, submitLabel, defaults = {}, onReset }: SmartFormProps & { onReset: () => void }) {
+function FormInner({ formId, title, fields, submitLabel, defaults = {}, showEstimate = false, onReset }: SmartFormProps & { onReset: () => void }) {
+  // Current values of choice and quantity fields, for the live estimate.
+  const [live, setLive] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = { ...defaults };
+    for (const f of fields) if (f.type === "quantity" && !initial[f.name]) initial[f.name] = String(f.min ?? 1);
+    return initial;
+  });
+  const setLiveValue = (name: string, value: string) => setLive((v) => (v[name] === value ? v : { ...v, [name]: value }));
   // The native form action only runs when JavaScript is unavailable; with JavaScript,
   // handleSubmit calls the action directly so network failures can be caught.
   const [nativeState, formAction] = useActionState(submitInquiry, initialFormState);
@@ -140,6 +150,10 @@ function FormInner({ formId, title, fields, submitLabel, defaults = {}, onReset 
       ref={formRef}
       action={formAction}
       onSubmit={handleSubmit}
+      onChange={(e) => {
+        const target = e.target;
+        if (showEstimate && target instanceof HTMLInputElement && target.name) setLiveValue(target.name, target.value);
+      }}
       noValidate
       aria-busy={pending}
       className="relative"
@@ -202,9 +216,12 @@ function FormInner({ formId, title, fields, submitLabel, defaults = {}, onReset 
             error={errors[field.name]}
             defaultValue={defaults[field.name]}
             onChange={() => clearError(field.name)}
+            onValue={(value) => setLiveValue(field.name, value)}
           />
         ))}
       </fieldset>
+
+      {showEstimate && <EstimatePanel estimate={estimateOrder(live)} />}
 
       <div className="mt-6">
         <Turnstile resetSignal={state} />
@@ -249,12 +266,14 @@ function Field({
   error,
   defaultValue,
   onChange,
+  onValue,
 }: {
   field: FieldConfig;
   formId: string;
   error?: string;
   defaultValue?: string;
   onChange: () => void;
+  onValue: (value: string) => void;
 }) {
   const id = `${formId}-${field.name}`;
   // Set after mount: statically rendered pages would otherwise carry the build date.
@@ -272,26 +291,70 @@ function Field({
     onChange,
   };
 
+  const required = field.required && (
+    <span className="text-brand-600" aria-hidden="true">
+      {" "}
+      *
+    </span>
+  );
+  const hint = field.hint && (
+    <span id={`${id}-hint`} className="text-right text-xs text-muted">
+      {field.hint}
+    </span>
+  );
+
+  if (field.type === "choice") {
+    return (
+      <fieldset className={field.full ? "sm:col-span-2" : ""} aria-describedby={describedBy}>
+        <div className="mb-2 flex items-baseline justify-between gap-3">
+          <legend className="float-left text-sm font-medium text-ink">
+            {field.label}
+            {required}
+          </legend>
+          {hint}
+        </div>
+        <div className={`clear-both grid gap-2 ${choiceColumns(field)}`}>
+          {field.options?.map((option) => (
+            <label
+              key={option}
+              className="group relative flex cursor-pointer flex-col justify-center rounded-xl bg-white px-4 py-3 ring-1 ring-line transition hover:ring-brand-300 has-[:checked]:bg-brand-50 has-[:checked]:ring-2 has-[:checked]:ring-brand-600 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-aqua-500"
+            >
+              <input
+                type="radio"
+                name={field.name}
+                value={option}
+                defaultChecked={defaultValue === option}
+                required={field.required}
+                onChange={onChange}
+                className="absolute inset-0 z-10 cursor-pointer appearance-none rounded-xl opacity-0"
+              />
+              <span className="text-sm font-semibold text-ink group-has-[:checked]:text-brand-700">{option}</span>
+              {field.optionHints?.[option] && <span className="mt-0.5 text-xs text-muted">{field.optionHints[option]}</span>}
+            </label>
+          ))}
+        </div>
+        {error && (
+          <p id={`${id}-error`} className="mt-2 text-sm text-red-700">
+            {error}
+          </p>
+        )}
+      </fieldset>
+    );
+  }
+
   return (
     <div className={field.full ? "sm:col-span-2" : ""}>
       <div className="mb-2 flex items-baseline justify-between gap-3">
         <label htmlFor={id} className="text-sm font-medium text-ink">
           {field.label}
-          {field.required && (
-            <span className="text-brand-600" aria-hidden="true">
-              {" "}
-              *
-            </span>
-          )}
+          {required}
         </label>
-        {field.hint && (
-          <span id={`${id}-hint`} className="text-right text-xs text-muted">
-            {field.hint}
-          </span>
-        )}
+        {hint}
       </div>
 
-      {field.type === "textarea" ? (
+      {field.type === "quantity" ? (
+        <QuantityStepper field={field} common={common} defaultValue={defaultValue} onValue={onValue} />
+      ) : field.type === "textarea" ? (
         <textarea
           {...common}
           rows={field.rows ?? 4}
@@ -329,6 +392,92 @@ function Field({
         <p id={`${id}-error`} className="mt-2 text-sm text-red-700">
           {error}
         </p>
+      )}
+    </div>
+  );
+}
+
+function QuantityStepper({
+  field,
+  common,
+  defaultValue,
+  onValue,
+}: {
+  field: FieldConfig;
+  common: Record<string, unknown> & { onChange: () => void };
+  defaultValue?: string;
+  onValue: (value: string) => void;
+}) {
+  const min = field.min ?? 1;
+  const max = field.max ?? 9999;
+  const [value, setValue] = useState(defaultValue ?? String(min));
+
+  function step(delta: number) {
+    const current = Number.parseInt(value, 10);
+    const next = Math.min(max, Math.max(min, (Number.isNaN(current) ? min : current) + delta));
+    setValue(String(next));
+    onValue(String(next));
+    common.onChange();
+  }
+
+  const button =
+    "inline-flex h-12 w-12 shrink-0 items-center justify-center text-xl font-semibold text-brand-700 transition hover:bg-brand-50 disabled:text-slate-300 disabled:hover:bg-transparent";
+  const current = Number.parseInt(value, 10);
+
+  return (
+    <div className="flex overflow-hidden rounded-xl bg-white ring-1 ring-line focus-within:ring-2 focus-within:ring-brand-500">
+      <button type="button" className={button} onClick={() => step(-1)} disabled={current <= min} aria-label="Decrease quantity">
+        −
+      </button>
+      <input
+        {...common}
+        type="number"
+        inputMode="numeric"
+        min={min}
+        max={max}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onValue(e.target.value);
+          common.onChange();
+        }}
+        className="h-12 w-full min-w-0 border-0 bg-transparent text-center text-base font-semibold text-ink focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      />
+      <button type="button" className={button} onClick={() => step(1)} disabled={current >= max} aria-label="Increase quantity">
+        +
+      </button>
+    </div>
+  );
+}
+
+function choiceColumns(field: FieldConfig): string {
+  const count = field.options?.length ?? 0;
+  if (field.optionHints) return count === 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1 sm:grid-cols-2";
+  if (count === 3) return "grid-cols-3";
+  return count > 3 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-2";
+}
+
+function EstimatePanel({ estimate }: { estimate: OrderEstimate }) {
+  return (
+    <div aria-live="polite" className="mt-6 rounded-2xl bg-brand-50 p-5 ring-1 ring-brand-100">
+      <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">Estimated total</p>
+      {estimate?.kind === "priced" ? (
+        <>
+          <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <p className="text-sm text-ink">
+              {estimate.product}: {formatKes(estimate.unitPrice)} × {estimate.quantity} {estimate.unit}
+              {estimate.contents && <span className="text-muted"> ({estimate.contents})</span>}
+            </p>
+            <p className="font-display text-2xl font-medium text-brand-700">{formatKes(estimate.total)}</p>
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            {estimate.frequency ? `Per delivery, ${estimate.frequency}. ` : ""}Delivery charges, if any, are confirmed when we call you.
+          </p>
+        </>
+      ) : estimate?.kind === "unpriced" ? (
+        <p className="mt-2 text-sm text-ink">{estimate.product}: price confirmed when we call you.</p>
+      ) : (
+        <p className="mt-2 text-sm text-muted">Choose a product and quantity to see your total.</p>
       )}
     </div>
   );

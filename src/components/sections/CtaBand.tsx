@@ -21,8 +21,8 @@ export function CtaBand({
     <section className="bg-white py-16 sm:py-20" aria-labelledby="cta-title">
       <Container>
         <div className="relative isolate overflow-hidden rounded-4xl bg-brand-900 px-6 py-14 text-white sm:px-12 lg:px-16 lg:py-16">
-          <Image src="/images/water-ripple.jpg" alt="" fill sizes="(min-width: 1280px) 1200px, 100vw" className="-z-20 object-cover opacity-40" />
-          <div className="absolute inset-0 -z-10 bg-linear-to-br from-brand-900 via-brand-900/80 to-aqua-700/50" />
+          <Image src="/images/ice-splash.jpg" alt="" fill sizes="(min-width: 1280px) 1200px, 100vw" className="-z-20 object-cover object-[50%_58%] opacity-70" />
+          <div className="absolute inset-0 -z-10 bg-linear-to-br from-brand-950 via-brand-950/75 to-transparent" />
           <div className="grid items-center gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
               <h2 id="cta-title" className="font-display text-3xl leading-tight font-medium text-balance sm:text-4xl">

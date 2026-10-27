@@ -2,11 +2,11 @@
  * Crystal Fresh Hydrolife – website submissions log for Google Sheets.
  *
  * Every form submission from the website is appended as a row, with one tab
- * per form (Order, Quote, Tender, Contact). Setup steps are in README.md next
+ * per form (Order, Quote, Contact). Setup steps are in README.md next
  * to this file.
  */
 
-var TAB_NAMES = { order: "Orders", quote: "Quotations", tender: "Tenders", contact: "Messages" };
+var TAB_NAMES = { order: "Orders", quote: "Quotations", contact: "Messages" };
 var FIXED_HEADERS = ["Received (Kenya time)", "Reference", "Reply-to email"];
 
 function doPost(e) {

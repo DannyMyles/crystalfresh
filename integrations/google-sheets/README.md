@@ -24,7 +24,7 @@ This keeps a permanent record of every website submission in a Google Sheet, alo
    Apps Script cannot read request headers, so the secret goes in the URL. Keep this variable private.
 7. Redeploy the website, submit a test from the contact page, and check that a **Messages** tab appears with your test row.
 
-Each form gets its own tab: **Orders**, **Quotations**, **Tenders** and **Messages**. If you add new fields to a form, new columns are added automatically.
+Each form gets its own tab: **Orders**, **Quotations** and **Messages**. If you add new fields to a form, new columns are added automatically.
 
 ## Updating the script
 

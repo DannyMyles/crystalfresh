@@ -4,6 +4,7 @@ import "./globals.css";
 import { site } from "@/config/site";
 import { businessJsonLd } from "@/lib/seo";
 import { Header } from "@/components/layout/Header";
+import { TopBar } from "@/components/layout/TopBar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -11,23 +12,23 @@ import { Analytics } from "@/components/analytics/Analytics";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap", axes: ["opsz"] });
-const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat", display: "swap", weight: ["500", "700"], preload: false });
+const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat", display: "swap", weight: ["600", "800"], preload: false });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Bottled Water & Refill Services, Ndwaru Road`,
+    default: `${site.name} | Bottled Water & Refill Services in Nairobi`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
   applicationName: site.name,
   keywords: [
-    "bottled water Ndwaru Road",
-    "water refill Ndwaru Road",
+    "bottled water Nairobi",
+    "water refill Nairobi",
+    "water delivery Nairobi",
     "drinking water supplier Kenya",
     "bulk water supply",
     "corporate water supply",
-    "water supply tender",
     site.name,
   ],
   openGraph: {
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         >
           Skip to content
         </a>
+        <TopBar />
         <Header />
         <main id="main">{children}</main>
         <Footer />

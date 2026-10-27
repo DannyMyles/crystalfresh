@@ -58,7 +58,7 @@ export function ContactOptions() {
           <div className="min-w-0">
             <p className="text-sm text-muted">Location</p>
             <p className="font-semibold text-ink">
-              {site.address.street}, {site.address.country}
+              {site.address.street}, {site.address.locality ?? site.address.country}
             </p>
           </div>
         </div>

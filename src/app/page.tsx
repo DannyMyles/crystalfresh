@@ -1,103 +1,145 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, BadgeCheck, Droplets, MapPin, Phone, Truck } from "lucide-react";
+import { site } from "@/config/site";
+import { products } from "@/content/products";
+import { telHref } from "@/lib/links";
+import { ButtonLink } from "@/components/ui/Button";
+import { Container, Section, SectionHeading } from "@/components/ui/Section";
+import { Reveal } from "@/components/ui/Reveal";
+import { ProductCard } from "@/components/sections/ProductCard";
+import { AudienceCards } from "@/components/sections/AudienceCards";
+import { InfoStrip } from "@/components/sections/InfoStrip";
+import { Gallery } from "@/components/sections/Gallery";
+import { Steps } from "@/components/sections/Steps";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { CtaBand } from "@/components/sections/CtaBand";
+import { Clients } from "@/components/sections/Clients";
 
-export default function Home() {
+const trustPoints = [
+  { icon: Droplets, label: "Bottled water & refills" },
+  { icon: Truck, label: "Local delivery" },
+  { icon: BadgeCheck, label: "Permitted business" },
+];
+
+const orderSteps = [
+  { title: "Contact us", description: "Order online, call or WhatsApp." },
+  { title: "We confirm", description: "Price, quantity and delivery time." },
+  { title: "We deliver", description: "Along Ndwaru Road and nearby." },
+];
+
+export default function HomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <>
+      <section className="relative isolate overflow-hidden bg-linear-to-b from-brand-50/70 via-white to-white">
+        <div
+          className="absolute -top-40 -right-40 -z-10 h-[36rem] w-[36rem] rounded-full bg-aqua-100/60 blur-3xl"
+          aria-hidden="true"
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+        <Container className="grid items-center gap-14 pt-12 pb-20 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:pt-20 lg:pb-28">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-sm font-medium text-brand-700 shadow-soft ring-1 ring-brand-100">
+              <MapPin className="h-4 w-4 text-aqua-500" aria-hidden="true" />
+              Ndwaru Road, Kenya
+            </p>
+            <h1 className="mt-7 font-display text-[2.6rem] leading-[1.04] font-medium tracking-tight text-balance text-ink sm:text-6xl lg:text-[4.25rem]">
+              Pure Water. <span className="text-brand-600">Reliable Supply.</span>{" "}
+              <span className="text-aqua-600 italic">Trusted Partnerships.</span>
+            </h1>
+            <p className="mt-7 max-w-lg text-lg leading-relaxed text-pretty text-muted">
+              Bottled drinking water and refills for homes, businesses and institutions along Ndwaru Road.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <ButtonLink href="/order" size="lg">
+                Order Water
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </ButtonLink>
+              <ButtonLink href="/quote" variant="secondary" size="lg">
+                Request a Quote
+              </ButtonLink>
+              <ButtonLink href="/contact" variant="ghost" size="lg">
+                Contact Us
+              </ButtonLink>
+            </div>
+            <ul className="mt-12 flex flex-wrap gap-x-8 gap-y-4">
+              {trustPoints.map(({ icon: Icon, label }) => (
+                <li key={label} className="flex items-center gap-3 text-sm font-medium text-ink">
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-aqua-600 shadow-soft ring-1 ring-line">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  {label}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+            <div className="animate-blob relative aspect-4/5 overflow-hidden shadow-lift">
+              <Image
+                src="/images/hero-glass-pour.jpg"
+                alt="Fresh water being poured into a clear glass"
+                fill
+                priority
+                sizes="(min-width: 1024px) 45vw, (min-width: 640px) 28rem, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-brand-950/60 to-transparent" />
+            </div>
+            <div className="animate-float-slow absolute -bottom-6 left-4 rounded-2xl bg-white/95 p-4 pr-6 shadow-lift ring-1 ring-line backdrop-blur sm:-left-8">
+              <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">Order by phone</p>
+              <a href={telHref} className="mt-1 flex items-center gap-2 text-lg font-semibold text-brand-700">
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                {site.phone.display}
+              </a>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <InfoStrip />
+
+      <Section id="products" labelledBy="products-title">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <SectionHeading id="products-title" eyebrow="Products" title="Our water" />
+          <Link href="/products" className="inline-flex items-center gap-2 font-semibold text-brand-700 transition-all hover:gap-3">
+            All products <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {products.map((product, i) => (
+            <Reveal key={product.slug} delay={i * 120}>
+              <ProductCard product={product} />
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      <Section tone="mist" labelledBy="audience-title">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <SectionHeading id="audience-title" eyebrow="Who we serve" title="Water for every need" />
+          <Link href="/business" className="inline-flex items-center gap-2 font-semibold text-brand-700 transition-all hover:gap-3">
+            Business supply <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+        <div className="mt-12">
+          <AudienceCards />
+        </div>
+      </Section>
+
+      <Section labelledBy="how-title">
+        <SectionHeading id="how-title" eyebrow="How it works" title="Order in three steps" />
+        <div className="mt-12">
+          <Steps steps={orderSteps} />
+        </div>
+      </Section>
+
+      <Clients tone="mist" />
+
+      <Gallery />
+
+      <Testimonials />
+
+      <CtaBand />
+    </>
   );
 }
